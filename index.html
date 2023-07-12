@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Exif Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+</head>
+
+<body>
+</body>
+
+</html>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <header>
+        <!-- place navbar here -->
+    </header>
+    <main>
+        <div class="container py-5">
+            <div class="mb-3">
+                <label for="" class="form-label">Choose Image</label>
+                <input type="file" class="form-control" name="" id="imagedata" placeholder=""
+                    aria-describedby="fileHelpId">
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="" class="form-label">Title</label>
+                <input type="text" class="form-control" name="" id="title" aria-describedby="helpId" placeholder="">
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">Camera</label>
+                <input type="text" class="form-control" name="" id="camera" aria-describedby="helpId" placeholder="">
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">Model</label>
+                <input type="text" class="form-control" name="" id="model" aria-describedby="helpId" placeholder="">
+            </div>
+
+
+
+        </div>
+        <div class="container my-5 p-5 bg-dark rounded text-white">
+            <h4>All Data</h4>
+            <pre id="allMetaDataSpan"></pre>
+        </div>
+
+
+
+    </main>
+    <footer>
+        <!-- place footer here -->
+    </footer>
+
+
+
+    <script>
+        const inputElement = document.getElementById("imagedata");
+
+        inputElement.addEventListener("change", handleFiles, false);
+
+        function handleFiles() {
+            const fileList = this.files; // Get the selected file
+
+            if (fileList.length > 0) {
+                const file = fileList[0];
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    const image = new Image();
+                    image.src = event.target.result;
+
+                    image.onload = function () {
+                        EXIF.getData(image, function () {
+                            const allMetaData = EXIF.getAllTags(this);
+                            var make = EXIF.getTag(this, "Make");
+                            console.log(allMetaData); // Display all metadata in the console
+                            autofill(allMetaData);
+
+                            // test 
+                            var allMetaDataSpan = document.getElementById("allMetaDataSpan");
+                            allMetaDataSpan.innerHTML = JSON.stringify(allMetaData, null, "\t");
+                        });
+                    };
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+
+        function autofill(exifData) {
+            document.getElementById("camera").value = exifData.Make?exifData.Make: "Unknown Camera";
+            document.getElementById("model").value = exifData.Model?exifData.Model: "Unknown";
+            document.getElementById("title").value = exifData.ImageDescription?exifData.ImageDescription: "";
+
+        }
+    </script>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
